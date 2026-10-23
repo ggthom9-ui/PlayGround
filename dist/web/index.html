@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08060c">
+  <title>thomkhali — app independente</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08060c;
+      --panel: rgba(255, 255, 255, 0.045);
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #f7f3fb;
+      --muted: #a79aae;
+      --brand: #74477f;
+      --brand-light: #c59bd0;
+      --brand-glow: rgba(139, 82, 158, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background:
+        radial-gradient(900px 520px at 12% 8%, rgba(116, 71, 127, 0.34), transparent 62%),
+        radial-gradient(720px 480px at 92% 88%, rgba(80, 44, 103, 0.3), transparent 64%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      opacity: 0.55;
+      z-index: 0;
+    }
+
+    .glow-a {
+      width: 380px;
+      height: 380px;
+      top: -180px;
+      right: 8%;
+      background: var(--brand-glow);
+    }
+
+    .glow-b {
+      width: 300px;
+      height: 300px;
+      bottom: -160px;
+      left: 2%;
+      background: rgba(196, 139, 210, 0.18);
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: min(1140px, calc(100% - 48px));
+      margin: 0 auto;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 64px;
+      padding: 72px 0 40px;
+    }
+
+    .copy { max-width: 620px; min-width: 0; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      margin-bottom: 28px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--brand-light);
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .tag span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand-light);
+      box-shadow: 0 0 14px var(--brand-light);
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: clamp(58px, 9vw, 116px);
+      line-height: 0.9;
+      letter-spacing: -0.065em;
+      font-weight: 800;
+    }
+
+    h1 .dot { color: var(--brand-light); }
+
+    .lead {
+      margin: 0 0 34px;
+      max-width: 520px;
+      color: var(--muted);
+      font-size: clamp(16px, 1.6vw, 19px);
+      line-height: 1.65;
+    }
+
+    .lead strong { color: var(--text); font-weight: 650; }
+
+    .cta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-bottom: 34px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 58px;
+      padding: 0 28px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #9b63a9, #74477f);
+      box-shadow: 0 16px 40px rgba(116, 71, 127, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 750;
+      text-decoration: none;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 48px rgba(116, 71, 127, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .btn svg { width: 18px; height: 18px; }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .chips li {
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.025);
+      color: #cfc3d5;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .device {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 0 0 auto;
+      padding-top: 10px;
+    }
+
+    .phone {
+      position: relative;
+      width: 292px;
+      height: 586px;
+      padding: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.17);
+      border-radius: 46px;
+      background: linear-gradient(155deg, #2a1d30, #0d0a10 45%, #1a1220);
+      box-shadow:
+        0 50px 110px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      transform: rotate(2deg);
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(150deg, rgba(197, 155, 208, 0.3), transparent 38%, transparent 70%, rgba(116, 71, 127, 0.35));
+      z-index: -1;
+      filter: blur(12px);
+    }
+
+    .notch {
+      position: absolute;
+      top: 21px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 82px;
+      height: 22px;
+      border-radius: 999px;
+      background: #09070c;
+      z-index: 2;
+    }
+
+    .screen {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 36px;
+      background:
+        radial-gradient(280px 220px at 50% 18%, rgba(116, 71, 127, 0.14), transparent 68%),
+        #fff;
+      color: #171019;
+      text-align: center;
+    }
+
+    .appicon {
+      width: 108px;
+      height: 108px;
+      margin-bottom: 20px;
+      object-fit: contain;
+    }
+
+    .appname {
+      margin: 0;
+      font-size: 27px;
+      font-weight: 780;
+      letter-spacing: -0.04em;
+    }
+
+    .url {
+      margin: 7px 0 32px;
+      color: #887d8b;
+      font-size: 13px;
+      font-weight: 550;
+    }
+
+    .fakebtn {
+      padding: 13px 32px;
+      border-radius: 999px;
+      background: #74477f;
+      box-shadow: 0 10px 24px rgba(116, 71, 127, 0.28);
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .home {
+      position: absolute;
+      bottom: 11px;
+      width: 100px;
+      height: 4px;
+      border-radius: 999px;
+      background: #1b141d;
+      opacity: 0.2;
+    }
+
+    .version {
+      margin-top: 26px;
+      color: #8e8095;
+      font-size: 12px;
+      font-weight: 550;
+      letter-spacing: 0.06em;
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 0 24px 30px;
+      color: #776a7e;
+      font-size: 12.5px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        width: min(620px, calc(100% - 40px));
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        padding-top: 56px;
+      }
+
+      .device { display: none; }
+
+      .copy { width: 100%; text-align: center; }
+
+      .lead { margin-left: auto; margin-right: auto; }
+
+      .cta, .chips { justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      main { padding: 48px 0 28px; }
+
+      .tag { margin-bottom: 22px; }
+
+      h1 { font-size: clamp(44px, 15.5vw, 64px); margin-bottom: 18px; }
+
+      .lead { font-size: 16px; line-height: 1.6; margin-bottom: 30px; }
+
+      .cta { gap: 12px; margin-bottom: 28px; }
+
+      .btn { width: 100%; justify-content: center; }
+
+      .hint { width: 100%; text-align: center; }
+
+      footer { font-size: 11.5px; padding-bottom: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+
+  <main>
+    <section class="copy">
+      <div class="tag"><span></span> app independente</div>
+      <h1>thomkhali<span class="dot">.</span></h1>
+      <p class="lead">Seu perfil em um app <strong>só seu</strong>. Sem Chrome, sem marca de terceiros — pacote, ícone e assinatura próprios.</p>
+
+      <div class="cta">
+        <a class="btn" href="thomkhali-1.0.0.apk" download="thomkhali-1.0.0.apk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12"></path>
+            <path d="m7 10 5 5 5-5"></path>
+            <path d="M5 21h14"></path>
+          </svg>
+          Baixar APK
+        </a>
+        <span class="hint">Android 7.0+ · 128 KB</span>
+      </div>
+
+      <ul class="chips">
+        <li>100% seu</li>
+        <li>Sem Chrome</li>
+        <li>Assinatura própria</li>
+      </ul>
+    </section>
+
+    <section class="device" aria-label="Prévia do app">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <img class="appicon" src="icon.png" alt="Ícone do app thomkhali">
+          <p class="appname">thomkhali</p>
+          <p class="url">guns.lol/thomkhali</p>
+          <div class="fakebtn">Abrir perfil</div>
+          <div class="home"></div>
+        </div>
+      </div>
+      <div class="version">v1.0.0 · com.thomkhali.guns</div>
+    </section>
+  </main>
+
+  <footer>Ícone, splash, pacote e chave de assinatura próprios.</footer>
+  <script>window.__APP_READY__ = true</script>
+</body>
+</html>
